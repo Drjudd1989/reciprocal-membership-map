@@ -100,14 +100,14 @@ function buildPopupHTML(venue) {
   let actionsHTML = '';
   if (venue.source_pdf_url) {
     actionsHTML += `
-      <a href="${escHtml(venue.source_pdf_url)}" target="_blank" rel="noopener noreferrer"
+      <a href="${escHtml(formatUrl(venue.source_pdf_url))}" target="_blank" rel="noopener noreferrer"
          class="popup-link primary" aria-label="Verify in source PDF">
         📄 Verify in PDF
       </a>`;
   }
   if (venue.website) {
     actionsHTML += `
-      <a href="${escHtml(venue.website)}" target="_blank" rel="noopener noreferrer"
+      <a href="${escHtml(formatUrl(venue.website))}" target="_blank" rel="noopener noreferrer"
          class="popup-link secondary" aria-label="Visit venue website">
         🌐 Website
       </a>`;
@@ -129,6 +129,15 @@ function buildPopupHTML(venue) {
       ${proofHTML}
       ${actionsHTML ? `<div class="popup-actions">${actionsHTML}</div>` : ''}
     </div>`;
+}
+
+function formatUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return `https://${trimmed}`;
+  }
+  return trimmed;
 }
 
 function escHtml(str) {
