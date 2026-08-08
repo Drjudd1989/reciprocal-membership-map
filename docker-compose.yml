@@ -1,0 +1,13 @@
+services:
+  reciprocal-map:
+    build: .
+    container_name: reciprocal-map
+    ports:
+      - "8090:8000"    # Host port 8090 → Container port 8000
+    volumes:
+      - ./data:/app/data    # Persists SQLite DB + downloaded PDFs across restarts
+    env_file:
+      - .env               # APP_USERNAME, APP_PASSWORD, NOMINATIM_EMAIL
+    environment:
+      - DATA_DIR=/app/data  # Tells the app where the data volume is mounted
+    restart: unless-stopped

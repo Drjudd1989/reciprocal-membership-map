@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reciprocal Memberships Map</title>
+  <meta name="description" content="Interactive map of reciprocal membership venues across ASTC, ACM, AZA, and AHS programs. Find participating science centers, children's museums, zoos, and botanical gardens near you." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="/static/leaflet.css" />
+
+  <!-- Our styles -->
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ===== Filter Panel ===== -->
+  <div id="filter-panel" role="complementary" aria-label="Filter programs">
+    <div class="panel-header">
+      <span class="panel-title">🗺 Reciprocal Memberships</span>
+      <button id="refresh-btn" class="refresh-btn" title="Refresh data from source" aria-label="Refresh data">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="filter-buttons" role="group" aria-label="Program filters">
+      <button class="filter-btn active" id="btn-astc" data-program="ASTC" aria-pressed="true">
+        <span class="dot" style="background: var(--color-astc)"></span>
+        <span class="label">ASTC</span>
+        <span class="count" id="count-astc">—</span>
+      </button>
+      <button class="filter-btn active" id="btn-acm" data-program="ACM" aria-pressed="true">
+        <span class="dot" style="background: var(--color-acm)"></span>
+        <span class="label">ACM</span>
+        <span class="count" id="count-acm">—</span>
+      </button>
+      <button class="filter-btn active" id="btn-aza" data-program="AZA" aria-pressed="true">
+        <span class="dot" style="background: var(--color-aza)"></span>
+        <span class="label">AZA</span>
+        <span class="count" id="count-aza">—</span>
+      </button>
+      <button class="filter-btn active" id="btn-ahs" data-program="AHS" aria-pressed="true">
+        <span class="dot" style="background: var(--color-ahs)"></span>
+        <span class="label">AHS</span>
+        <span class="count" id="count-ahs">—</span>
+      </button>
+    </div>
+
+    <div id="status-bar" class="status-bar" aria-live="polite">Loading...</div>
+  </div>
+
+  <!-- ===== Refresh Overlay ===== -->
+  <div id="refresh-overlay" class="refresh-overlay hidden" role="dialog" aria-modal="true" aria-label="Refreshing data">
+    <div class="refresh-card">
+      <div class="spinner"></div>
+      <p class="refresh-title">Refreshing Data</p>
+      <p class="refresh-subtitle">Downloading & geocoding venues...<br>This may take a few minutes.</p>
+      <button id="refresh-cancel" class="refresh-cancel-btn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ===== Map ===== -->
+  <div id="map" role="main" aria-label="Interactive venue map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="/static/leaflet.js"></script>
+
+  <!-- App JS -->
+  <script src="/static/app.js"></script>
+</body>
+</html>

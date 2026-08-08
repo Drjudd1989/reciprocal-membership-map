@@ -1,0 +1,53 @@
+Product Requirements Document: Reciprocal Memberships Map (MVP 1) - Final
+
+1. Product Overview
+The goal of this project is to build a unified, web-based interactive map that consolidates participating locations for four major family reciprocal membership programs (AHS, AZA, ASTC, and ACM). The MVP will allow users to easily visualize, filter, and identify reciprocal locations across the country without needing to cross-reference multiple disparate PDFs.
+
+2. Scope of MVP 1
+Supported Programs: Association of Science and Technology Centers (ASTC), Association of Children's Museums (ACM), Association of Zoos and Aquariums (AZA), and American Horticultural Society (AHS).
+Core Feature: Display all participating venues on a single interactive map.
+Filtering: Simple UI toggles to filter the map pins by program type.
+Venue Details: Clickable map pins that reveal an info window containing the venue name, program affiliation, basic discount description, and a verification link to the official program PDF.
+Out of Scope for MVP: Complex radius logic (e.g., ASTC's 90-mile rule) and real-time automated PDF scraping.
+
+3. Technology Stack & Architecture
+Component
+Selection & Rationale
+ 
+Application Architecture
+Decoupled API. A Python FastAPI server will serve the static HTML/JS frontend and provide a lightweight `/api/locations` JSON endpoint.
+Database
+SQLite. File-based and perfectly suited for a read-heavy containerized environment.
+Frontend UI
+HTML/CSS/JS utilizing Leaflet.js with OpenStreetMap tiles. No API keys or usage quotas required.
+Deployment (Docker)
+Single Docker container hosted on NAS.
+Port Mapping: 8090:8000 (Host:Container).
+Persistence: A volume mount (e.g., ./data:/app/data) MUST be configured to ensure the SQLite database and PDF files survive container restarts.
+
+
+4. Data Architecture & Ingestion Pipeline
+The application relies on a static database that is periodically updated via a standalone python script.
+Extraction: Addresses and details are extracted from PDFs stored in the persistent /data volume.
+Geocoding Script: update_database.py reads the data, passes each address to the free Nominatim/OpenStreetMap geocoder, and retrieves Latitude and Longitude.
+Database Population: The script writes the structured data directly into the SQLite locations table.
+
+Proposed Database Schema (SQLite)
+TABLE: locations
+- id (INTEGER, Primary Key)
+- name (TEXT)
+- address (TEXT)
+- latitude (REAL)
+- longitude (REAL)
+- program (TEXT)          // "ACM", "ASTC", "AZA", "AHS"
+- discount_info (TEXT)
+- source_pdf_url (TEXT)
+
+
+
+5. User Interface Requirements
+Map View: A full-viewport Leaflet.js map utilizing OpenStreetMap tiles, initializing centered on the continental United States.
+Filter Control Panel: A floating or sidebar panel containing checkboxes for the four programs to toggle pins via JavaScript.
+Custom Map Pins: Visual differentiation for the pins (e.g., color coding) to easily distinguish programs at a glance.
+Info Window: Upon clicking a pin, a Leaflet popup opens containing the venue details and a clickable "Verify in PDF" hyperlink.
+

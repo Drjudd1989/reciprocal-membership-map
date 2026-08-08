@@ -1,0 +1,489 @@
+/* ============================================================
+   Reciprocal Memberships Map — style.css
+   Design: Dark map, glassmorphism panel, vibrant program colors
+   Font: Inter (Google Fonts)
+   ============================================================ */
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --color-astc: #4A9EFF;
+  --color-acm:  #B66DFF;
+  --color-aza:  #FF8C42;
+  --color-ahs:  #52D68A;
+
+  --panel-bg:          rgba(15, 18, 28, 0.88);
+  --panel-border:      rgba(255, 255, 255, 0.08);
+  --panel-shadow:      0 8px 32px rgba(0, 0, 0, 0.45),
+                       0 2px 8px rgba(0, 0, 0, 0.3);
+  --panel-blur:        16px;
+  --panel-radius:      14px;
+
+  --text-primary:      #f0f2f8;
+  --text-secondary:    rgba(240, 242, 248, 0.55);
+  --text-muted:        rgba(240, 242, 248, 0.35);
+
+  --surface-hover:     rgba(255, 255, 255, 0.06);
+  --surface-active:    rgba(255, 255, 255, 0.10);
+
+  --transition-fast:   150ms ease;
+  --transition-med:    250ms ease;
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0d14;
+}
+
+/* ── Map ────────────────────────────────────────────────────── */
+#map {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── Filter Panel ───────────────────────────────────────────── */
+#filter-panel {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 1000;
+  background: var(--panel-bg);
+  backdrop-filter: blur(var(--panel-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--panel-blur)) saturate(160%);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+  padding: 14px 16px 12px;
+  min-width: 240px;
+  max-width: 300px;
+  transition: opacity var(--transition-med);
+}
+
+/* Panel header row */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Refresh button (icon only) */
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+              transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.refresh-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.refresh-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.refresh-btn:active {
+  transform: rotate(-30deg) scale(0.92);
+}
+
+.refresh-btn.spinning svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Filter Buttons ─────────────────────────────────────────── */
+.filter-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 9px;
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  transition: background var(--transition-fast), opacity var(--transition-fast),
+              border-color var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.filter-btn:hover {
+  background: var(--surface-active);
+  transform: translateY(-1px);
+}
+
+.filter-btn:active {
+  transform: translateY(0);
+}
+
+/* Active state — colored left border accent */
+.filter-btn.active {
+  opacity: 1;
+}
+
+.filter-btn#btn-astc.active { border-color: rgba(74, 158, 255, 0.4); }
+.filter-btn#btn-acm.active  { border-color: rgba(182, 109, 255, 0.4); }
+.filter-btn#btn-aza.active  { border-color: rgba(255, 140, 66, 0.4); }
+.filter-btn#btn-ahs.active  { border-color: rgba(82, 214, 138, 0.4); }
+
+/* Inactive / toggled off */
+.filter-btn:not(.active) {
+  opacity: 0.38;
+  border-color: transparent;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.filter-btn .label {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.filter-btn .count {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 22px;
+  text-align: right;
+}
+
+/* ── Status Bar ─────────────────────────────────────────────── */
+.status-bar {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  min-height: 16px;
+  transition: opacity var(--transition-med);
+}
+
+/* ── Refresh Overlay ────────────────────────────────────────── */
+.refresh-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(5, 7, 14, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 200ms ease;
+}
+
+.refresh-overlay.hidden {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.refresh-card {
+  background: var(--panel-bg);
+  backdrop-filter: blur(var(--panel-blur));
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+  padding: 36px 40px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+}
+
+/* Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-astc);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+
+.refresh-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.refresh-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.refresh-cancel-btn {
+  padding: 7px 20px;
+  border: 1px solid var(--panel-border);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.refresh-cancel-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* ── Leaflet Popup Overrides ────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background: rgba(15, 18, 28, 0.96) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5) !important;
+  color: var(--text-primary) !important;
+  padding: 0 !important;
+  max-width: 320px !important;
+  min-width: 240px !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  font-family: 'Inter', sans-serif !important;
+  line-height: 1.5 !important;
+}
+
+.leaflet-popup-tip-container {
+  display: none !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-secondary) !important;
+  font-size: 20px !important;
+  padding: 6px 10px !important;
+  top: 4px !important;
+  right: 4px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--text-primary) !important;
+  background: none !important;
+}
+
+/* ── Popup Card Styles ──────────────────────────────────────── */
+.popup-card {
+  padding: 16px 18px 14px;
+}
+
+.popup-program-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.popup-program-badge.astc { background: rgba(74,158,255,0.15); color: var(--color-astc); }
+.popup-program-badge.acm  { background: rgba(182,109,255,0.15); color: var(--color-acm); }
+.popup-program-badge.aza  { background: rgba(255,140,66,0.15); color: var(--color-aza); }
+.popup-program-badge.ahs  { background: rgba(82,214,138,0.15); color: var(--color-ahs); }
+
+.popup-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.popup-location {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.popup-divider {
+  height: 1px;
+  background: var(--panel-border);
+  margin: 10px 0;
+}
+
+.popup-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+
+.popup-memberships {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.popup-proof-warning {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #FFB347;
+  background: rgba(255, 179, 71, 0.10);
+  border-radius: 6px;
+  padding: 5px 8px;
+  margin-bottom: 10px;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.popup-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: opacity var(--transition-fast), background var(--transition-fast);
+  white-space: nowrap;
+}
+
+.popup-link.primary {
+  background: rgba(74, 158, 255, 0.12);
+  color: var(--color-astc);
+  border: 1px solid rgba(74, 158, 255, 0.2);
+}
+
+.popup-link.primary:hover {
+  background: rgba(74, 158, 255, 0.20);
+}
+
+.popup-link.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid var(--panel-border);
+}
+
+.popup-link.secondary:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* ── Leaflet attribution (keep visible but subtle) ──────────── */
+.leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+/* ── Leaflet zoom controls ──────────────────────────────────── */
+.leaflet-control-zoom a {
+  background: rgba(15, 18, 28, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-primary) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ── Mobile responsive ──────────────────────────────────────── */
+@media (max-width: 520px) {
+  #filter-panel {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    min-width: unset;
+  }
+
+  .filter-buttons {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+  }
+
+  .filter-btn {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 4px;
+    font-size: 11px;
+    text-align: center;
+    align-items: center;
+  }
+
+  .filter-btn .count {
+    margin-left: 0;
+    text-align: center;
+  }
+}
