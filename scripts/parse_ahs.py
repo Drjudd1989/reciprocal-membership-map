@@ -266,6 +266,7 @@ def clean_ocr_text(s: str) -> str:
     s = s.replace("Chabanooga", "Chattanooga")
     s = s.replace("Buberfly", "Butterfly")
     s = s.replace("Nebleton", "Nettleton")
+    s = s.replace("friendsomhegarden.org", "friendsofthegarden.org")
     
     # Parenthetical/outlier cleanup
     if "actually gets you to the site" in s:
